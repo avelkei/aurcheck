@@ -1,4 +1,4 @@
-from checks.BaseChecker import BaseChecker
+from .BaseChecker import BaseChecker
 
 class GitChecker(BaseChecker):
 	pass

@@ -1,7 +1,7 @@
 from typing import List
 
-from checks.util.CheckResult import CheckResult
-from checks.util.Severity import Severity
+from .util.CheckResult import CheckResult
+from .util.Severity import Severity
 
 class BaseChecker:
 	"""Base class for package checker classes

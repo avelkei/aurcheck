@@ -1,6 +1,6 @@
-from checks.BaseChecker import BaseChecker
-from checks.util.CheckResult import CheckResult
-from checks.util.Severity import Severity
+from .BaseChecker import BaseChecker
+from .util.CheckResult import CheckResult
+from .util.Severity import Severity
 
 class ClamAvChecker(BaseChecker):
 	def check_fn(self):

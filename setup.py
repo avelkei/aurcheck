@@ -12,7 +12,14 @@ setuptools.setup(
 	long_description=long_description,
 	long_description_content_type="text/markdown",
 	url="https://github.com/avelkei/aurcheck",
-	packages=setuptools.find_packages(),
+	packages=[
+		"aurcheck",
+		"aurcheck.checks",
+		"aurcheck.checks.util"
+	],
+	scripts=[
+		"bin/aurcheck"
+	],
 	classifiers=[
 		"Programming Language :: Python :: 3",
 		"License :: OSI Approved :: MIT License",

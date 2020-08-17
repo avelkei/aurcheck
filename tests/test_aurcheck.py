@@ -1,4 +1,4 @@
-import aurcheck
+from aurcheck import aurcheck
 import pytest
 
 @pytest.fixture

@@ -1,29 +1,30 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import argparse
 import os.path
 import re
 import sys
 
-from checks.GitChecker import GitChecker
-from checks.YaraChecker import YaraChecker
-from checks.ClamAvChecker import ClamAvChecker
-from checks.SRCINFOChecker import SRCINFOChecker
-from checks.util.Severity import Severity
+from aurcheck.checks.GitChecker import GitChecker
+from aurcheck.checks.YaraChecker import YaraChecker
+from aurcheck.checks.ClamAvChecker import ClamAvChecker
+from aurcheck.checks.SRCINFOChecker import SRCINFOChecker
+from aurcheck.checks.util.Severity import Severity
 
 class Aurcheck:
+	available_checks = [
+		#GitChecker,
+		YaraChecker,
+		ClamAvChecker,
+		SRCINFOChecker
+	]
+	
 	def __init__(self, args: dict):
 		if not os.path.isdir(args["path"]):
 			print("Invalid path, the program must be called with a directory parameter")
 			sys.exit(1)
 
-		self.available_checks = [
-			#GitChecker,
-			YaraChecker,
-			ClamAvChecker,
-			SRCINFOChecker
-		]
-
+		self.available_checks = Aurcheck.available_checks
 		self.package_path = args["path"]
 		self.is_git_repo = os.path.isdir(f"{self.package_path}/.git")
 		self.verbose_output = args["verbose"]
@@ -154,30 +155,33 @@ class Aurcheck:
 				with open(self.logfile, "a") as f:
 					f.write(result + "\n")
 
-if __name__ == "__main__":
-	import textwrap
+	def main(args):
+		import textwrap
 
-	parser = argparse.ArgumentParser(
-		prog="aurcheck",
-		description="Scans an AUR package for potential threats",
-		epilog="Available checkers:\n" + textwrap.indent("\n".join(Aurcheck({"path": "."}).available_checks), "    "))
-	parser.add_argument("path", metavar="package_path", type=str, help="path to directory containing PKGBUILD and other build files")
-	parser.add_argument("-d", "--disable", action="append", help="disable certain checks")
-	parser.add_argument("--only", help="run a single specified checker")
-	parser.add_argument("-v", "--verbose", action="store_true", help="print info messages")
-	parser.add_argument("-l", "--logfile", nargs="?", const="aurcheck.log", help="write output to a log file (default: aurcheck.log)")
+		checker_names = [checker.__name__ for checker in Aurcheck.available_checks]
 
-	args = parser.parse_args()
-	args = vars(args)
+		parser = argparse.ArgumentParser(
+			prog="aurcheck",
+			description="Scans an AUR package for potential threats",
+			epilog="Available checkers:\n" + textwrap.indent("\n".join(checker_names), "  "),
+			formatter_class=argparse.RawDescriptionHelpFormatter)
+		parser.add_argument("path", metavar="package_path", type=str, help="path to directory containing PKGBUILD and other build files")
+		parser.add_argument("-d", "--disable", action="append", help="disable certain checks")
+		parser.add_argument("--only", help="run a single specified checker")
+		parser.add_argument("-v", "--verbose", action="store_true", help="print info messages")
+		parser.add_argument("-l", "--logfile", nargs="?", const="aurcheck.log", help="write output to a log file (default: aurcheck.log)")
 
-	ac = Aurcheck(args)
-	ac.prepare()
-	ac.run_checks()
-	ac.write_results()
+		parsed_args = parser.parse_args(args=args[1:])
+		parsed_args = vars(parsed_args)
 
-	# Exit codes:
-	# 0 - no issues found
-	# 1 - exited due to an error
-	# 2 - warning level issues found, might need user confirmation
-	# 3 - known harmful matches found, should abort unless user gives explicit permission
-	sys.exit(ac.exit_code)
+		ac = Aurcheck(parsed_args)
+		ac.prepare()
+		ac.run_checks()
+		ac.write_results()
+
+		# Exit codes:
+		# 0 - no issues found
+		# 1 - exited due to an error
+		# 2 - warning level issues found, might need user confirmation
+		# 3 - known harmful matches found, should abort unless user gives explicit permission
+		sys.exit(ac.exit_code)
