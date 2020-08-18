@@ -71,8 +71,6 @@ class YaraChecker(BaseChecker):
 
 					for (line_num, line_text) in match_lines:
 						self.add_result_item(CheckResult(severity=match_severity, filepath=filepath, line_number=line_num, line_content=line_text, match_name=rule_id))
-
-		package_directory = os.path.dirname(os.path.abspath(__file__))
 		
 		with pkg_resources.path(yara_rules, "index_warn.yar") as path_warn:
 			with pkg_resources.path(yara_rules, "index_block.yar") as path_block:
