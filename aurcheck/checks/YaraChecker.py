@@ -1,6 +1,12 @@
+try:
+	import importlib.resources as pkg_resources
+except ImportError:
+	import importlib_resources as pkg_resources
+
 from .BaseChecker import BaseChecker
 from .util.CheckResult import CheckResult
 from .util.Severity import Severity
+from .. import yara_rules
 
 class YaraChecker(BaseChecker):
 	def check_fn(self):
@@ -67,7 +73,9 @@ class YaraChecker(BaseChecker):
 						self.add_result_item(CheckResult(severity=match_severity, filepath=filepath, line_number=line_num, line_content=line_text, match_name=rule_id))
 
 		package_directory = os.path.dirname(os.path.abspath(__file__))
-
-		for filepath in self.package_files:
-			scan_file(filepath, package_directory + "/../yara_rules/index_warn.yar", Severity.WARN)
-			scan_file(filepath, package_directory + "/../yara_rules/index_block.yar", Severity.BLOCK)
+		
+		with pkg_resources.path(yara_rules, "index_warn.yar") as path_warn:
+			with pkg_resources.path(yara_rules, "index_block.yar") as path_block:
+				for filepath in self.package_files:
+					scan_file(filepath, str(path_warn), Severity.WARN)
+					scan_file(filepath, str(path_block), Severity.BLOCK)

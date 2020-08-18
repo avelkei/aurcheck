@@ -15,8 +15,10 @@ setuptools.setup(
 	packages=[
 		"aurcheck",
 		"aurcheck.checks",
-		"aurcheck.checks.util"
+		"aurcheck.checks.util",
+		"aurcheck.yara_rules"
 	],
+	include_package_data = True,
 	scripts=[
 		"bin/aurcheck"
 	],

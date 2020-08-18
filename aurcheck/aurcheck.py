@@ -185,3 +185,6 @@ class Aurcheck:
 		# 2 - warning level issues found, might need user confirmation
 		# 3 - known harmful matches found, should abort unless user gives explicit permission
 		sys.exit(ac.exit_code)
+
+if __name__ == "__main__":
+	Aurcheck.main(sys.argv)
