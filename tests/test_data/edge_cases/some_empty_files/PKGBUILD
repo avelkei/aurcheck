@@ -1,0 +1,21 @@
+# Maintainer: Adam Velkei <adam@avelkei.eu>
+
+_pkgname=aurcheck
+pkgname=$_pkgname
+pkgver=0.1
+pkgrel=1
+pkgdesc="Scans an AUR package for potential threats"
+arch=('any')
+url="https://github.com/avelkei/$_pkgname"
+license=('MIT')
+depends=('python' 'python-setuptools' 'yara' 'yextend-yara4')
+optdepends=('clamav: for running an anti-virus scan on files')
+source=("${_pkgname}-${pkgver}.tar.gz")
+#source=("$_pkgname-$pkgver.tar.gz::https://github.com/avelkei/$_pkgname/archive/v$pkgver.tar.gz")
+md5sums=('SKIP')
+
+package() {
+	cd "$_pkgname-$pkgver"
+	python setup.py install --root="${pkgdir}/"
+	install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/$_pkgname/LICENSE"
+}

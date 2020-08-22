@@ -31,7 +31,7 @@ def test_get_checker_from_name(init_aurcheck):
 	class AnotherTestChecker:
 		pass
 
-	ac = init_aurcheck({"path": "tests/test_data/aur_package_clean"})
+	ac = init_aurcheck({"path": "tests/test_data/clean/aur_package_clean"})
 	ac.available_checks = [TestChecker1, TestChecker2, AnotherTestChecker]
 
 	# Simple lookups
@@ -57,35 +57,35 @@ def test_select_checks(init_aurcheck):
 		pass
 
 	# Default behaviour - no exceptions specified, every checker is enabled to run
-	ac = init_aurcheck({"path": "tests/test_data/aur_package_clean"})
+	ac = init_aurcheck({"path": "tests/test_data/clean/aur_package_clean"})
 	ac.available_checks = [TestChecker1, TestChecker2, AnotherTestChecker]
 
 	ac.select_checks()
 	assert ac.enabled_checks == ac.available_checks
 
 	# Single checker enabled
-	ac = init_aurcheck({"path": "tests/test_data/aur_package_clean", "only": "testchecker1"})
+	ac = init_aurcheck({"path": "tests/test_data/clean/aur_package_clean", "only": "testchecker1"})
 	ac.available_checks = [TestChecker1, TestChecker2, AnotherTestChecker]
 
 	ac.select_checks()
 	assert ac.enabled_checks == [TestChecker1]
 
 	# Single checker disabled
-	ac = init_aurcheck({"path": "tests/test_data/aur_package_clean", "disable": ["testchecker2"]})
+	ac = init_aurcheck({"path": "tests/test_data/clean/aur_package_clean", "disable": ["testchecker2"]})
 	ac.available_checks = [TestChecker1, TestChecker2, AnotherTestChecker]
 
 	ac.select_checks()
 	assert ac.enabled_checks == [TestChecker1, AnotherTestChecker]
 
 	# Multiple checkers disabled
-	ac = init_aurcheck({"path": "tests/test_data/aur_package_clean", "disable": ["testchecker2", "another"]})
+	ac = init_aurcheck({"path": "tests/test_data/clean/aur_package_clean", "disable": ["testchecker2", "another"]})
 	ac.available_checks = [TestChecker1, TestChecker2, AnotherTestChecker]
 
 	ac.select_checks()
 	assert ac.enabled_checks == [TestChecker1]
 
 	# All checkers disabled
-	ac = init_aurcheck({"path": "tests/test_data/aur_package_clean", "disable": ["testchecker1", "testchecker2", "another"]})
+	ac = init_aurcheck({"path": "tests/test_data/clean/aur_package_clean", "disable": ["testchecker1", "testchecker2", "another"]})
 	ac.available_checks = [TestChecker1, TestChecker2, AnotherTestChecker]
 
 	with pytest.raises(KeyError, match="There are no enabled checks to run"):
