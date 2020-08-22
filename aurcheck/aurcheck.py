@@ -135,7 +135,7 @@ class Aurcheck:
 				for (match, match_items) in file_items_by_match.items():
 					result_strings.append(f"  {match_items[0].severity.name} -- {match}")
 					for item in match_items:
-						line = f"    {str(item.line_number).ljust(5)} {item.line_content}"
+						line = f"    line {str(item.line_number).ljust(5)} {item.line_content}"
 						if item.message is not None:
 							line += f" ({item.message})"
 						result_strings.append(line)
@@ -155,6 +155,7 @@ class Aurcheck:
 				with open(self.logfile, "a") as f:
 					f.write(result + "\n")
 
+	@staticmethod
 	def main(args):
 		import textwrap
 
