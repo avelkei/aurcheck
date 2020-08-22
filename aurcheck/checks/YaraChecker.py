@@ -6,7 +6,7 @@ except ImportError:
 from .BaseChecker import BaseChecker
 from .util.CheckResult import CheckResult
 from .util.Severity import Severity
-from .. import yara_rules
+from aurcheck import yara_rules
 
 class YaraChecker(BaseChecker):
 	def check_fn(self):
@@ -23,7 +23,6 @@ class YaraChecker(BaseChecker):
 
 		import json
 		import os.path
-		import pprint
 
 		def get_offset_lines(filepath, offsets):
 			match_lines = []
@@ -36,11 +35,11 @@ class YaraChecker(BaseChecker):
 
 						line_length = len(line)
 
-						if file_offset + line_length < offsets[0]:
+						if file_offset + line_length <= offsets[0]:
 							file_offset += line_length
 							continue
 
-						match_lines.append((i, line.rstrip()))
+						match_lines.append((i+1, line.rstrip()))
 						offsets = list(filter(lambda offset: offset > file_offset + line_length, offsets))
 						file_offset += line_length
 				except UnicodeDecodeError:
@@ -62,7 +61,6 @@ class YaraChecker(BaseChecker):
 				scan_results = yextend_output["scan_results"]
 				for sr in scan_results:
 					rule_id = sr["yara_rule_id"]
-					hit_count = sr["hit_count"]
 					match_offsets = list(map(lambda ofs: int(ofs.split(":")[0], 16), sr["detected offsets"]))
 					match_lines = get_offset_lines(filepath, match_offsets) # tuple(line_index, line_text)
 					if match_lines is None:
