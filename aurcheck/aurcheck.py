@@ -9,6 +9,7 @@ from aurcheck.checks.GitChecker import GitChecker
 from aurcheck.checks.YaraChecker import YaraChecker
 from aurcheck.checks.ClamAvChecker import ClamAvChecker
 from aurcheck.checks.SRCINFOChecker import SRCINFOChecker
+from aurcheck.checks.ShellChecker import ShellChecker
 from aurcheck.checks.util.Severity import Severity
 
 class Aurcheck:
@@ -16,7 +17,8 @@ class Aurcheck:
 		#GitChecker,
 		YaraChecker,
 		ClamAvChecker,
-		SRCINFOChecker
+		SRCINFOChecker,
+		ShellChecker
 	]
 	
 	def __init__(self, args: dict):
