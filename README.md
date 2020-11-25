@@ -123,4 +123,5 @@ class ClamAvChecker(BaseChecker):
 
 ## Testing
 
-`pytest` is used for unit testing. Checker tests can be added in the tests/checks directory.
+Make sure you have `pytest` installed and execute `run_tests.sh` from the project's root directory.\
+Checker tests can be added in the tests/checks directory.

@@ -1,2 +1,4 @@
 __pycache__
 .pytest_cache
+/aurcheck.kdev4
+/.kdev4/aurcheck.kdev4
