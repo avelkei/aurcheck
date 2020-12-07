@@ -14,16 +14,15 @@ class ShellChecker(BaseChecker):
 			self.fail_message = "shellcheck can't be found"
 			return
 
-		ignore_files = [
-			".gitignore",
-			".SRCINFO"
+		files_to_check = [
+			"PKGBUILD"
 		]
 
 		# Certain files tend to generate a high number of messages which can be safely ignored
 		ignore_codes = {
 			"*": [
 				2034, # variable appears unused
-				2148, # missing shebang directive
+				2148,
 			],
 			"PKGBUILD": [
 				2154, # variable referenced but not assigned
@@ -31,15 +30,11 @@ class ShellChecker(BaseChecker):
 		}
 
 		def get_shell_scripts(filepath_list):
-			"""Select files which look like shell scripts using `bash -n <filepath>`"""
+			"""Select shell script files"""
 			sh_files = []
 
 			for filepath in filepath_list:
-				if os.path.basename(filepath) in ignore_files:
-					continue
-				
-				bash_process = subprocess.run(["bash", "-n", filepath], capture_output=True)
-				if bash_process.returncode == 0:
+				if os.path.basename(filepath) in files_to_check or filepath.endswith(".sh"):
 					sh_files.append(filepath)
 
 			return sh_files
@@ -92,7 +87,3 @@ class ShellChecker(BaseChecker):
 		sh_files = get_shell_scripts(self.package_files)
 		for filepath in sh_files:
 			check_file(filepath)
-
-		#print(self.package_files, file=sys.stderr)
-		#print(sh_files, file=sys.stderr)
-		#print(self.results, file=sys.stderr)
