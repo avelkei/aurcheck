@@ -1,6 +1,6 @@
 # aurcheck
 
-Runs safety checks on AUR package (ideally before building and installing)
+Runs safety checks on AUR packages (ideally before building and installing)
 
 ## Usage
 
@@ -93,32 +93,32 @@ from checks.util.Severity import Severity
 
 # Make sure that the checker class inherits from BaseChecker
 class ClamAvChecker(BaseChecker):
-	# Override the check_fn method with you own logic
-	def check_fn(self):
-		from shutil import which
-		import subprocess
-		
-		# If your checker can't run for any reason, you can put an error message
-		# in self.fail_message. If self.fail_message is set to anything other than
-		# its default None value, the checker's results will be discarded.
-		if which("clamscan") is None:
-			self.fail_message = "ClamAV (clamscan) can't be found"
-			return
+  # Override the check_fn method with you own logic
+  def check_fn(self):
+    from shutil import which
+    import subprocess
 
-		clam_process = subprocess.run(["clamscan", "-r", self.package_path], capture_output=True)
+    # If your checker can't run for any reason, you can put an error message
+    # in self.fail_message. If self.fail_message is set to anything other than
+    # its default None value, the checker's results will be discarded.
+    if which("clamscan") is None:
+      self.fail_message = "ClamAV (clamscan) can't be found"
+      return
 
-		# New CheckResult objects can be created like this:
-		# CheckResult(severity=Severity.INFO, message="ClamAV found no malicious files")
-		# 
-		# Use the self.add_result_item method to add the CheckResult objects to the
-		# checkers final results.
-		if clam_process.returncode == 0: # ClamAV says clean
-			self.add_result_item(CheckResult(severity=Severity.INFO, message="ClamAV found no malicious files"))
-		elif clam_process.returncode == 1: # ClamAV found malicious files
-			clam_output = clam_process.stdout.decode("utf-8")
-			self.add_result_item(CheckResult(severity=Severity.BLOCK, message=clam_output))
-		elif clam_process.returncode == 2: # ClamAV failed to complete
-			self.fail_message = "ClamAV failed with an error"
+      clam_process = subprocess.run(["clamscan", "-r", self.package_path], capture_output=True)
+
+    # New CheckResult objects can be created like this:
+    # CheckResult(severity=Severity.INFO, message="ClamAV found no malicious files")
+    #
+    # Use the self.add_result_item method to add the CheckResult objects to the
+    # checkers final results.
+    if clam_process.returncode == 0: # ClamAV says clean
+      self.add_result_item(CheckResult(severity=Severity.INFO, message="ClamAV found no malicious files"))
+    elif clam_process.returncode == 1: # ClamAV found malicious files
+      clam_output = clam_process.stdout.decode("utf-8")
+      self.add_result_item(CheckResult(severity=Severity.BLOCK, message=clam_output))
+    elif clam_process.returncode == 2: # ClamAV failed to complete
+      self.fail_message = "ClamAV failed with an error"
 ```
 
 ## Testing
