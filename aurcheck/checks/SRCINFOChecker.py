@@ -36,7 +36,7 @@ class SRCINFOChecker(BaseChecker):
 			pkgbuild_contents = re.sub(rf"(\${var_name}|\$\{{{var_name}\}})", var_value.strip("'\""), pkgbuild_contents)
 		
 		# Check if there are any URLs in the PKGBUILD file that are not present in .SRCINFO
-		url_regex = re.compile(r"(https?:\/\/[^\[\]\(\)\s'\"]+)")
+		url_regex = re.compile(r"(https?:\/\/[^\[\]\(\)\s'\"<>]+)")
 
 		pkgbuild_urls = url_regex.findall(pkgbuild_contents)
 		srcinfo_urls = url_regex.findall(srcinfo_contents)
